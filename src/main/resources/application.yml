@@ -1,0 +1,27 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    allow-circular-references: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/admin_backend?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: admin
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 启用 HikariCP（Spring Boot 3 默认使用 HikariCP）
+    hikari:
+      maximum-pool-size: 10
+      auto-commit: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.mhua.adminbackend
+  configuration:
+    mapUnderscoreToCamelCase: true # 推荐使用驼峰命名法映射字段
+
+sky:
+  jwt:
+    admin-secret-key: mhua
+    admin-ttl: 7200000
+    admin-token-name: token
