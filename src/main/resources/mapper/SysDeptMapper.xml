@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.SysDeptMapper">
+    <insert id="insert" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sys_dept (name, parent_id, create_time, update_time, create_user, update_user)
+        VALUES (#{name}, #{parentId}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="update">
+        UPDATE sys_dept
+        <set>
+            <if test="name != null || name != ''">
+                name = #{name},
+            </if>
+            <if test="parentId != null || name != ''">
+                parent_id = #{parentId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="createUser != null || name != ''">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByIds">
+        delete from sys_dept where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.SysDept">
+        SELECT * FROM sys_dept
+        <where>
+            <if test="name != null">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.SysDept">
+        SELECT * FROM sys_dept WHERE id = #{id}
+    </select>
+
+    <select id="listAll" resultType="com.mhua.adminbackend.pojo.entity.SysDept">
+        SELECT * FROM sys_dept
+    </select>
+</mapper>

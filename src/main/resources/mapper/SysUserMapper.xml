@@ -1,6 +1,80 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mhua.adminbackend.mapper.SysUserMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO sys_user (username, nickname, email, phone, dept_id, avatar, create_time, update_time, create_user, update_user, password)
+        VALUES (#{username}, #{nickname}, #{email}, #{phone}, #{deptId}, #{avatar}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser}, #{password})
+    </insert>
 
+    <update id="update">
+        UPDATE sys_user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="deptId != null and deptId != ''">
+                dept_id = #{deptId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.SysUser">
+        SELECT * FROM sys_user WHERE id = #{id}
+    </select>
+
+    <select id="existsByUsername" resultType="int">
+        SELECT COUNT(*) FROM sys_user WHERE username = #{username}
+    </select>
+
+    <select id="existsByUsernameAndId" resultType="int">
+        SELECT COUNT(*) FROM sys_user WHERE username = #{username} and id != #{id}
+    </select>
+
+    <delete id="deleteByIds">
+        delete from sys_user where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.SysUser">
+        SELECT * FROM sys_user
+        <where>
+            <if test="username != null">
+                AND username LIKE CONCAT('%', #{username}, '%')
+            </if>
+            <if test="nickname != null">
+                AND nickname LIKE CONCAT('%', #{nickname}, '%')
+            </if>
+            <if test="email != null">
+                AND email LIKE CONCAT('%', #{email}, '%')
+            </if>
+            <if test="phone != null">
+                AND phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="deptId != null">
+                AND dept_id = #{deptId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByNameAndPassword" resultType="com.mhua.adminbackend.pojo.entity.SysUser">
+        SELECT * FROM sys_user WHERE username = #{username} and password = #{password}
+    </select>
 </mapper>

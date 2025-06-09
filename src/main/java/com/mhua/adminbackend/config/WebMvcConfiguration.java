@@ -1,18 +1,15 @@
 package com.mhua.adminbackend.config;
 
+import com.mhua.adminbackend.interceptor.JwtTokenAdminInterceptor;
+import com.mhua.adminbackend.json.JacksonObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 
@@ -23,6 +20,9 @@ import java.util.List;
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
+    @Autowired
+    private JwtTokenAdminInterceptor jwtTokenAdminInterceptor;
+
     /**
      * 注册自定义拦截器
      *
@@ -30,28 +30,15 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      */
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
-    }
+        List<String> excludePaths = List.of(
+                "/sys/user/login",
+                "/v3/api-docs/swagger-config",
+                "/v3/api-docs/default"
+        );
 
-    /**
-     * 通过knife4j生成接口文档
-     *
-     * @return
-     */
-    @Bean
-    public Docket docket() {
-        log.info("准备生成接口文档");
-        ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("苍穹外卖项目接口文档")
-                .version("2.0")
-                .description("苍穹外卖项目接口文档")
-                .build();
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.mhua.adminbackend"))
-                .paths(PathSelectors.any())
-                .build();
-        return docket;
+        registry.addInterceptor(jwtTokenAdminInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(excludePaths);
     }
 
     /**
@@ -72,12 +59,28 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      */
     @Override
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        log.info("扩展消息转换器...");
+        log.info("扩展消息转换器...，用于时间格式化");
         //创建一个消息转换器对象
 //        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+//
 //        //为消息转换器设置一个对象转换器，将java对象序列化为json数据
 //        converter.setObjectMapper(new JacksonObjectMapper());
+//
 //        //将自定义的消息转换器加入容器，这样springmvc框架就可以使用了
-//        converters.add(0, converter); //index=0 这样可以让自定义消息转换器优先生效
+//        //index=0 这样可以让自定义消息转换器优先生效
+//        converters.add(0, converter);
+        // 先让Knife4j的转换器处理OpenAPI文档请求
+//        converters.stream()
+//                .filter(c -> c.getClass() == MappingJackson2HttpMessageConverter.class)
+//                .findFirst()
+//                .ifPresent(c -> {
+//                    // 只在非Knife4j的转换器上应用自定义配置
+//                    if (!c.toString().contains("OpenApiResource")) {
+//                        MappingJackson2HttpMessageConverter customConverter =
+//                                new MappingJackson2HttpMessageConverter(new JacksonObjectMapper());
+//                        converters.add(converters.indexOf(c) + 1, customConverter); // 插入到默认转换器之后
+//                    }
+//                });
+
     }
 }

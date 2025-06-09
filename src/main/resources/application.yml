@@ -6,7 +6,7 @@ spring:
     allow-circular-references: true
   datasource:
     url: jdbc:mysql://localhost:3306/admin_backend?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: admin
+    username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 启用 HikariCP（Spring Boot 3 默认使用 HikariCP）
@@ -20,8 +20,27 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true # 推荐使用驼峰命名法映射字段
 
-sky:
+mhua:
   jwt:
-    admin-secret-key: mhua
-    admin-ttl: 7200000
-    admin-token-name: token
+    secret-key: mhua
+    ttl: 7200000
+    token-name: authorization
+
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.mhua.adminbackend.controller.sys
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  production: false # 开发环境关闭鉴权
+  setting:
+    language: zh_cn
