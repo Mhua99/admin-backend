@@ -23,7 +23,7 @@ mybatis:
 mhua:
   jwt:
     secret-key: mhua
-    ttl: 7200000
+    ttl: 7200000000
     token-name: authorization
 
 # springdoc-openapi项目配置

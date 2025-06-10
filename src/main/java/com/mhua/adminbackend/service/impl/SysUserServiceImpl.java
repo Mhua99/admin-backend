@@ -2,7 +2,6 @@ package com.mhua.adminbackend.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.mhua.adminbackend.constant.TipConstant;
 import com.mhua.adminbackend.exception.BaseException;
 import com.mhua.adminbackend.pojo.dto.SysUserLoginDTO;
 import com.mhua.adminbackend.pojo.dto.SysUserQueryDTO;
@@ -12,6 +11,7 @@ import com.mhua.adminbackend.pojo.vo.SysUserVO;
 import com.mhua.adminbackend.properties.JwtProperties;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.service.SysUserService;
+import com.mhua.adminbackend.constant.TipConstant;
 import com.mhua.adminbackend.utils.JwtUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,6 @@ public class SysUserServiceImpl implements SysUserService {
         int pageSize = sysUserQueryDTO.getPageSize() == null ? 10 : sysUserQueryDTO.getPageSize();
         PageHelper.startPage(page, pageSize);
 
-        // 确保返回的 PageResult 是泛型化的 PageResult<SysUser>
         Page<SysUser> pageList = sysUserMapper.list(sysUserQueryDTO);
         return new PageResult<>(pageList.getTotal(), pageList.getResult());
     }
@@ -138,6 +137,8 @@ public class SysUserServiceImpl implements SysUserService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
 
-        return JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
+        String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
+
+        return token;
     }
 }
