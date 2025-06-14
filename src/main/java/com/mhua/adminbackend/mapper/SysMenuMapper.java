@@ -26,4 +26,6 @@ public interface SysMenuMapper {
     SysMenu getById(Integer id);
 
     Boolean delete(List<Integer> ids);
+
+    List<SysMenu> listAll();
 }

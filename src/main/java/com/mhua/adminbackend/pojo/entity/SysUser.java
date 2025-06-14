@@ -1,6 +1,7 @@
 package com.mhua.adminbackend.pojo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mhua.adminbackend.pojo.comm.Comm;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +28,6 @@ public class SysUser extends Comm implements Serializable {
 
     private String avatar;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String password;
 }

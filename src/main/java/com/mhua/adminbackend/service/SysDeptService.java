@@ -13,7 +13,7 @@ public interface SysDeptService {
 
     PageResult<SysDept> list(SysDeptQueryDTO sysDeptQueryDTO);
 
-    SysDept create(SysDept sysDept);
+    SysDept insert(SysDept sysDept);
 
     SysDept update(SysDept sysDept);
 

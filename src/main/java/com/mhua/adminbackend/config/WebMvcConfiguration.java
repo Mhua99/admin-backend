@@ -31,7 +31,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
         List<String> excludePaths = List.of(
-                "/sys/user/login",
+                "/system/user/login",
                 "/v3/api-docs/swagger-config",
                 "/v3/api-docs/default"
         );

@@ -30,6 +30,9 @@
             <if test="updateUser != null">
                 update_user = #{updateUser},
             </if>
+            <if test="password != null and password != ''">
+                password = #{password}
+            </if>
         </set>
         WHERE id = #{id}
     </update>
@@ -54,7 +57,7 @@
     </delete>
 
     <select id="list" resultType="com.mhua.adminbackend.pojo.entity.SysUser">
-        SELECT * FROM sys_user
+        SELECT id, username, nickname, email, phone, dept_id, avatar, create_user, create_time, update_user, update_time, nickname FROM sys_user
         <where>
             <if test="username != null">
                 AND username LIKE CONCAT('%', #{username}, '%')

@@ -3,6 +3,7 @@ package com.mhua.adminbackend.controller.sys;
 import com.mhua.adminbackend.pojo.dto.SysMenuQueryDTO;
 import com.mhua.adminbackend.pojo.entity.SysMenu;
 import com.mhua.adminbackend.pojo.entity.SysUser;
+import com.mhua.adminbackend.pojo.vo.SysMenuTreeVO;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.result.Result;
 import com.mhua.adminbackend.service.SysMenuService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sys/menu")
+@RequestMapping("/system/menu")
 @Tag(name = "菜单管理")
 public class MenuController {
 
@@ -30,8 +31,8 @@ public class MenuController {
 
     @PostMapping
     @Operation(summary = "新增菜单")
-    public Result<SysMenu> create(@RequestBody SysMenu sysMenu) {
-        SysMenu menu = sysMenuService.create(sysMenu);
+    public Result<SysMenu> insert(@RequestBody SysMenu sysMenu) {
+        SysMenu menu = sysMenuService.insert(sysMenu);
         return Result.success(menu);
     }
 
@@ -47,6 +48,13 @@ public class MenuController {
     public Result<Boolean> delete(@PathVariable("ids") List<Integer> ids) {
         Boolean result = sysMenuService.delete(ids);
         return Result.success(result);
+    }
+
+    @GetMapping("/tree")
+    @Operation(summary = "获取菜单树")
+    public Result<List<SysMenuTreeVO>> tree() {
+        List<SysMenuTreeVO> tree = sysMenuService.tree();
+        return Result.success(tree);
     }
 
 }

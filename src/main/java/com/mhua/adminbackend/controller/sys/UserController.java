@@ -3,6 +3,7 @@ package com.mhua.adminbackend.controller.sys;
 import com.mhua.adminbackend.pojo.dto.SysUserLoginDTO;
 import com.mhua.adminbackend.pojo.dto.SysUserQueryDTO;
 import com.mhua.adminbackend.pojo.entity.SysUser;
+import com.mhua.adminbackend.pojo.vo.SysUserLoginVO;
 import com.mhua.adminbackend.pojo.vo.SysUserVO;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.result.Result;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @Tag(name = "用户管理")
-@RequestMapping("/sys/user")
+@RequestMapping("/system/user")
 public class UserController {
 
     @Autowired
@@ -31,8 +32,8 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "新增用户")
-    public Result<SysUserVO> create(@RequestBody SysUser sysUser) {
-        SysUserVO sysUserRet = sysUserService.create(sysUser);
+    public Result<SysUserVO> insert(@RequestBody SysUser sysUser) {
+        SysUserVO sysUserRet = sysUserService.insert(sysUser);
         return Result.success(sysUserRet);
     }
 
@@ -61,7 +62,7 @@ public class UserController {
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录")
-    public Result<String> login(@RequestBody SysUserLoginDTO sysUserLoginDTO) {
+    public Result<SysUserLoginVO> login(@RequestBody SysUserLoginDTO sysUserLoginDTO) {
         return Result.success(sysUserService.login(sysUserLoginDTO));
     }
 }

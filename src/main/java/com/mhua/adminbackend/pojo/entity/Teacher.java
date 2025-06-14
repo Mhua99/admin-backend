@@ -7,27 +7,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class SysMenu extends Comm implements Serializable {
-
-    private Integer parentId;
+public class Teacher extends Comm implements Serializable {
 
     private String name;
 
-    private String url;
+    private String level;
 
-    /**
-     * 1 菜单
-     * 2 页面
-     */
-    private Integer type;
+    private BigDecimal miniSalary;
 
-    private String icon;
+    private BigDecimal courseSalary;
 
-    private String parentName;
+    private Integer age;
+
+    private String sex;
 
 }

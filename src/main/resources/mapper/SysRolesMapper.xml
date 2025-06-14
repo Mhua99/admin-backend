@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.SysRolesMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into sys_roles (name, permission_ids, create_time, update_time, create_user, update_user)
+        values (#{name}, #{permissionIds}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="update">
+        update sys_roles
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="permissionIds != null">
+                permission_ids = #{permissionIds},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+    </update>
+
+    <delete id="delete">
+        delete from sys_roles where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.SysRoles">
+        select * from sys_roles
+       <where>
+           <if test="name != null and name != ''">
+               and name like concat('%',#{name},'%')
+           </if>
+       </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.SysRoles">
+        select * from sys_roles where id = #{id}
+    </select>
+</mapper>

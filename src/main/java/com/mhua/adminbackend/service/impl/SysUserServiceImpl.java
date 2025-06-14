@@ -7,6 +7,7 @@ import com.mhua.adminbackend.pojo.dto.SysUserLoginDTO;
 import com.mhua.adminbackend.pojo.dto.SysUserQueryDTO;
 import com.mhua.adminbackend.pojo.entity.SysUser;
 import com.mhua.adminbackend.mapper.SysUserMapper;
+import com.mhua.adminbackend.pojo.vo.SysUserLoginVO;
 import com.mhua.adminbackend.pojo.vo.SysUserVO;
 import com.mhua.adminbackend.properties.JwtProperties;
 import com.mhua.adminbackend.result.PageResult;
@@ -42,7 +43,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Transactional
-    public SysUserVO create(SysUser sysUser) {
+    public SysUserVO insert(SysUser sysUser) {
 
         String password = sysUser.getPassword();
         String username = sysUser.getUsername();
@@ -114,7 +115,7 @@ public class SysUserServiceImpl implements SysUserService {
         return sysUserVO;
     }
 
-    public String login(SysUserLoginDTO sysUserLoginDTO) {
+    public SysUserLoginVO login(SysUserLoginDTO sysUserLoginDTO) {
         String username = sysUserLoginDTO.getUsername();
         String password = sysUserLoginDTO.getPassword();
 
@@ -139,6 +140,6 @@ public class SysUserServiceImpl implements SysUserService {
 
         String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
 
-        return token;
+        return new SysUserLoginVO(token, user.getId());
     }
 }

@@ -12,22 +12,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SysMenu extends Comm implements Serializable {
-
-    private Integer parentId;
+public class Student extends Comm implements Serializable {
 
     private String name;
 
-    private String url;
-
-    /**
-     * 1 菜单
-     * 2 页面
-     */
-    private Integer type;
-
-    private String icon;
-
-    private String parentName;
-
+    private Integer age;
 }

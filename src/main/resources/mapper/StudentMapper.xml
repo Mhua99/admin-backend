@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.StudentMapper">
+
+    <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        insert into business_student(name, age, create_user, update_user, create_time, update_time)
+        values(#{name}, #{age}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="update">
+        update business_student
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from business_student
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.Student">
+        select * from business_student
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.Student">
+        select * from business_student where id = #{id}
+    </select>
+</mapper>

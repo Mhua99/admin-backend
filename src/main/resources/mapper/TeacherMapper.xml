@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.TeacherMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into business_teacher (name, level, mini_salary, course_salary, age, sex, create_time, update_time, create_user, update_user)
+        values (#{name}, #{level}, #{miniSalary}, #{courseSalary}, #{age}, #{sex}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
+    </insert>
+
+    <update id="update">
+        update business_teacher
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="level != null and name != ''">
+                level = #{level},
+            </if>
+            <if test="miniSalary != null">
+                mini_salary = #{miniSalary},
+            </if>
+            <if test="courseSalary != null">
+                course_salary = #{courseSalary},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from business_teacher where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.Teacher">
+        select * from business_teacher
+        <where>
+            <if test="name != null">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="level != null">
+                AND level LIKE CONCAT('%', #{level}, '%')
+            </if>
+            <if test="sex != null">
+                AND sex = #{sex}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.Teacher">
+        select * from business_teacher where id = #{id}
+    </select>
+</mapper>

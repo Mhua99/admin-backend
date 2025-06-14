@@ -38,7 +38,7 @@ public class SysDeptServiceImpl implements SysDeptService {
         return new PageResult<>(pageList.getTotal(), pageList.getResult());
     }
 
-    public SysDept create(SysDept sysDept) {
+    public SysDept insert(SysDept sysDept) {
 
         String name = sysDept.getName();
         if (name == null || name.isEmpty()) {
@@ -55,12 +55,12 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     public SysDept update(SysDept sysDept) {
         if (sysDept.getId() == null) {
-            throw new BaseException("部门ID不能为空");
+            throw new BaseException("部门ID不能为空", 500);
         }
 
         String name = sysDept.getName();
         if (name == null || name.isEmpty()) {
-            throw new RuntimeException("部门名称不能为空");
+            throw new BaseException("部门名称不能为空", 500);
         }
 
         /**

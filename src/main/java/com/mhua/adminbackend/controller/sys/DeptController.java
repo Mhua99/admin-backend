@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sys/dept")
+@RequestMapping("/system/dept")
 @Tag(name = "部门管理")
 public class DeptController {
 
@@ -30,8 +30,8 @@ public class DeptController {
 
     @PostMapping
     @Operation(summary = "新增部门")
-    public Result<SysDept> create(@RequestBody SysDept sysDept) {
-        SysDept sysDeptRet = sysDeptService.create(sysDept);
+    public Result<SysDept> insert(@RequestBody SysDept sysDept) {
+        SysDept sysDeptRet = sysDeptService.insert(sysDept);
         return Result.success(sysDeptRet);
     }
 

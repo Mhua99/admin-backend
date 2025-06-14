@@ -53,7 +53,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             return true;
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            throw new BaseException("令牌验证失败");
+            throw new BaseException("令牌验证失败", 401);
         }
     }
 }
