@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.CourseMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into business_course(name, cost, course_count, create_user, update_user, create_time, update_time, type)
+        values(#{name}, #{cost}, #{courseCount}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime}, #{type})
+    </insert>
+    <update id="update">
+        update business_course
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="cost != null">
+                cost = #{cost},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="courseCount != null">
+                course_count = #{courseCount},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete business_course where id in
+                                <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                                    #{id}
+                                </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.Course">
+        select * from business_course
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+        </where>
+    </select>
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.Course">
+        select * from business_course where id = #{id}
+    </select>
+
+    <select id="getAll" resultType="com.mhua.adminbackend.pojo.entity.Course">
+        select * from business_course
+    </select>
+</mapper>
