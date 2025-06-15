@@ -10,8 +10,12 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentQueryDTO extends PageComm implements Serializable {
+public class ClassesSignQueryDTO extends PageComm implements Serializable {
 
-    private String name;
+    private Integer userId;
+
+    private String username;
+
+    private Integer classesId;
 
 }

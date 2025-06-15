@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +23,14 @@ public class Classes extends Comm  implements Serializable {
      * 学年
      */
     private Integer year;
+
+    /**
+     * 费用
+     */
+    private BigDecimal cost;
+
+    /**
+     * 课时数
+     */
+    private Integer courseCount;
 }

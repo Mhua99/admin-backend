@@ -11,5 +11,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassesVO extends Classes implements Serializable {
+    /**
+     * 课程名称
+     */
     private String courseName;
 }

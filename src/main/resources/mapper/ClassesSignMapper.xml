@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.ClassesSignMapper">
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.vo.ClassesSignVO">
+        select s.*, c.cost, c.course_count as courseCount from business_classes_sign s LEFT JOIN business_classes c on s.classes_id = c.id
+        <where>
+            <if test="username != null">
+                and username like concat('%', #{username}, '%')
+            </if>
+            <if test="classesId != null">
+                and classes_id = #{classesId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.ClassesSign">
+        select * from business_classes_sign where id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into business_classes_sign (user_id, classes_id, create_user, update_user, create_time, update_time)
+        values  (#{userId}, #{classesId}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="update">
+        update business_classes_sign
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="classesId != null">
+                classes_id = #{classesId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from business_classes_sign
+        where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+</mapper>

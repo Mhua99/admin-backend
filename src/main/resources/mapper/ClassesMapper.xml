@@ -2,9 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mhua.adminbackend.mapper.ClassesMapper">
     <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        insert into business_classes (course_id, year, create_user, update_user, create_time, update_time)
-        values  (#{courseId}, #{year}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime})
+        insert into business_classes (course_id, year, create_user, update_user, create_time, update_time, cost, course_count)
+        values  (#{courseId}, #{year}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime}, #{cost}, #{courseCount})
     </insert>
+
     <update id="update">
         update business_classes
         <set>

@@ -3,6 +3,7 @@ package com.mhua.adminbackend.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.mhua.adminbackend.mapper.ClassesMapper;
+import com.mhua.adminbackend.mapper.CourseMapper;
 import com.mhua.adminbackend.pojo.dto.ClassesQueryDTO;
 import com.mhua.adminbackend.pojo.entity.Classes;
 import com.mhua.adminbackend.pojo.entity.Course;
@@ -21,6 +22,9 @@ public class ClassesServiceImpl implements ClassesService {
     @Autowired
     private ClassesMapper classesMapper;
 
+    @Autowired
+    private CourseMapper courseMapper;
+
     public PageResult<ClassesVO> list(ClassesQueryDTO classesQueryDTO) {
         Integer page = classesQueryDTO.getPage();
         Integer pageSize = classesQueryDTO.getPageSize();
@@ -35,11 +39,26 @@ public class ClassesServiceImpl implements ClassesService {
     }
 
     public Classes insert(Classes classes) {
+
+        /**
+         * 先查询课程费用和课时
+         */
+        Course courseInfo = courseMapper.getById(classes.getCourseId());
+        classes.setCost(courseInfo.getCost());
+        classes.setCourseCount(courseInfo.getCourseCount());
+
         classesMapper.insert(classes);
         return classesMapper.getById(classes.getId());
     }
 
     public Classes update(Classes classes) {
+        /**
+         * 先查询课程费用和课时
+         */
+        Course courseInfo = courseMapper.getById(classes.getCourseId());
+        classes.setCost(courseInfo.getCost());
+        classes.setCourseCount(courseInfo.getCourseCount());
+
         classesMapper.update(classes);
         return classesMapper.getById(classes.getId());
     }
