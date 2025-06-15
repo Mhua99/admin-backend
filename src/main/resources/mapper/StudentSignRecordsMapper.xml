@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.StudentSignRecordsMapper">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into business_student_sign_records(create_user, update_user, create_time, update_time, student_id, teacher_sign_id)
+        values( #{createUser}, #{updateUser}, #{createTime}, #{updateTime}, #{studentId}, #{teacherSignId})
+    </insert>
+    <update id="update">
+        update business_student_sign_records
+        <set>
+            <if test="studentId != null">
+                student_id = #{studentId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from business_student_sign_records where id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.StudentSignRecords">
+        select r.*, t.sign_time from business_student_sign_records r  left join business_teacher_sign_records t on  r.teacher_sign_id = t.id
+        <where>
+            <if test="studentId != null">
+                AND student_id = #{studentId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.StudentSignRecords">
+        select * from business_student_sign_records where id = #{id}
+    </select>
+
+    <select id="existSignRecord" resultType="com.mhua.adminbackend.pojo.entity.StudentSignRecords">
+        select * from business_student_sign_records where student_id = #{studentId} and teacher_sign_id = #{teacherSignId}
+    </select>
+</mapper>
