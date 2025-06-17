@@ -30,4 +30,9 @@ public class StudentSignRecords extends Comm implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime signTime;
 
+    /**
+     * 学员名字
+     */
+    private String studentName;
+
 }

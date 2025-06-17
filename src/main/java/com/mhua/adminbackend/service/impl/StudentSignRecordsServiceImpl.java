@@ -16,6 +16,8 @@ import com.mhua.adminbackend.utils.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -31,8 +33,7 @@ public class StudentSignRecordsServiceImpl implements StudentSignRecordsService 
         pageSize = NumberUtils.checkInteger(pageSize, 10);
 
         PageHelper.startPage(page, pageSize);
-
-
+        // 手动转换
         Page<StudentSignRecords> pageList = studentSignRecordsMapper.list(studentSignRecordsQueryDTO);
         return new PageResult<>(pageList.getTotal(), pageList.getResult());
     }

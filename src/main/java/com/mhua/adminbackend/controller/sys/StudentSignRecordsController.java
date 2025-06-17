@@ -1,13 +1,10 @@
 package com.mhua.adminbackend.controller.sys;
 
 import com.mhua.adminbackend.pojo.dto.StudentSignRecordsQueryDTO;
-import com.mhua.adminbackend.pojo.dto.TeacherSignRecordsQueryDTO;
 import com.mhua.adminbackend.pojo.entity.StudentSignRecords;
-import com.mhua.adminbackend.pojo.entity.TeacherSignRecords;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.result.Result;
 import com.mhua.adminbackend.service.StudentSignRecordsService;
-import com.mhua.adminbackend.service.TeacherSignRecordsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/business/StudentSignRecords")
+@RequestMapping("/business/studentSignRecords")
 @Tag(name = "课程学习记录管理")
 public class StudentSignRecordsController {
 

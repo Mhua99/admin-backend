@@ -22,10 +22,18 @@
     </delete>
 
     <select id="list" resultType="com.mhua.adminbackend.pojo.entity.StudentSignRecords">
-        select r.*, t.sign_time from business_student_sign_records r  left join business_teacher_sign_records t on  r.teacher_sign_id = t.id
+        select r.*, t.sign_time, st.name as student_name from business_student_sign_records r
+        left join business_teacher_sign_records t on  r.teacher_sign_id = t.id
+        left join business_student st on r.student_id = st.id
         <where>
             <if test="studentId != null">
                 AND student_id = #{studentId}
+            </if>
+            <if test="teacherSignId != null">
+                AND teacher_sign_id = #{teacherSignId}
+            </if>
+            <if test="signTime != null">
+                AND DATE_FORMAT(t.sign_time, '%Y-%m-%d 00:00:00') = #{signTime}
             </if>
         </where>
     </select>

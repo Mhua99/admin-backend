@@ -3,18 +3,32 @@
 <mapper namespace="com.mhua.adminbackend.mapper.ClassesSignMapper">
 
     <select id="list" resultType="com.mhua.adminbackend.pojo.vo.ClassesSignVO">
-        select s.*, c.cost, c.course_count as courseCount from business_classes_sign s LEFT JOIN business_classes c on s.classes_id = c.id
-        <where>
-            <if test="username != null">
-                and username like concat('%', #{username}, '%')
-            </if>
-            <if test="classesId != null">
-                and classes_id = #{classesId}
-            </if>
-            <if test="userId != null">
-                and user_id = #{userId}
-            </if>
-        </where>
+        SELECT
+            classes.id,
+            classes.cost,
+            classes.course_count,
+            classes.student_id,
+            COUNT(CASE WHEN records.sign_time BETWEEN classes.start_time AND classes.end_time THEN 1 END) AS usedCount,
+            classes.course_count - COUNT(CASE WHEN records.sign_time BETWEEN classes.start_time AND classes.end_time THEN 1 END) AS useCount
+        FROM
+            (SELECT te.sign_time, st.student_id
+             FROM business_teacher_sign_records te
+                      LEFT JOIN business_student_sign_records st ON te.id = st.teacher_sign_id) records
+                Right JOIN
+            (SELECT si.id, si.student_id, cl.start_time, cl.end_time, cl.course_count, cl.cost
+             FROM business_classes cl
+                      LEFT JOIN business_classes_sign si ON cl.id = si.classes_id
+             <where>
+                <if test="classesId != null">
+                    si.classes_id = #{classesId}
+                </if>
+                 <if test="studentId != null">
+                   and  si.student_id = #{studentId}
+                 </if>
+             </where>
+             ) classes
+            ON classes.student_id = records.student_id
+        GROUP BY records.student_id, classes.course_count, classes.cost, classes.id
     </select>
 
     <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.ClassesSign">
@@ -22,15 +36,15 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        insert into business_classes_sign (user_id, classes_id, create_user, update_user, create_time, update_time)
-        values  (#{userId}, #{classesId}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime})
+        insert into business_classes_sign (student_id, classes_id, create_user, update_user, create_time, update_time)
+        values  (#{studentId}, #{classesId}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime})
     </insert>
 
     <update id="update">
         update business_classes_sign
         <set>
-            <if test="userId != null">
-                user_id = #{userId},
+            <if test="student_id != null">
+                user_id = #{studentId},
             </if>
             <if test="classesId != null">
                 classes_id = #{classesId},

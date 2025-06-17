@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ClassesSignQueryDTO extends PageComm implements Serializable {
 
-    private Integer userId;
+    private Integer studentId;
 
     private String username;
 
