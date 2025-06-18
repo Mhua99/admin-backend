@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.SalaryMapper">
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into business_coach_salary (coach_id, salary, create_time, update_time, remarks, salary_time) values (#{coachId}, #{salary}, #{createTime}, #{updateTime}, #{remarks}, #{salaryTime})
+    </insert>
+
+    <update id="update">
+        update  business_coach_salary
+        <set>
+            <if test="coachId != null">
+                coach_id = #{coachId},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="salaryTime != null">
+                salary_time = #{salaryTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+    </update>
+    <delete id="delete">
+        delete from business_coach_salary
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.Salary">
+        select * from business_coach_salary
+        <where>
+            <if test="coachId != null">
+                and coach_id = #{coachId}
+            </if>
+        </where>
+    </select>
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.Salary">
+        select * from business_coach_salary where id = #{id}
+    </select>
+
+    <select id="getCurrentTotalSalary" resultType="com.mhua.adminbackend.pojo.vo.SalaryMonth">
+        SELECT
+            te.mini_salary,
+            te.course_salary,
+            re.course_count,
+            (re.course_count * te.course_salary + te.mini_salary) AS total_salary
+        FROM
+            business_teacher te
+                JOIN (
+                SELECT
+                    COUNT(id) AS course_count
+                FROM
+                    business_teacher_sign_records
+                <where>
+                    <if test="coachId != null">
+                        AND teacher_id = #{coachId}
+                    </if>
+                    <if test="salaryTime != null">
+                        AND DATE_FORMAT(sign_time, '%Y-%m') = #{salaryTime}
+                    </if>
+                </where>
+            ) re
+        WHERE
+            te.id = #{coachId}
+    </select>
+</mapper>

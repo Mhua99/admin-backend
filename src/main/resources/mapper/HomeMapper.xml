@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.HomeMapper">
+
+    <select id="getCoachCountAndStudentCount"
+            resultType="com.mhua.adminbackend.pojo.vo.CoachCountAndStudentCountVO">
+        SELECT
+                (SELECT COUNT(*) FROM business_student) AS studentCount,
+                (SELECT COUNT(*) FROM business_teacher) AS coachCount
+    </select>
+
+    <select id="getCoachRecordsCurrentMonth"
+            resultType="com.mhua.adminbackend.pojo.vo.CoachRecordsCurrentMonth">
+        SELECT
+            DATE_FORMAT(sign_time, '%Y-%m-%d') AS sign_date,
+            COUNT(*) AS count
+            FROM business_teacher_sign_records
+        <where>
+            <if test="signTime != null">
+                and DATE_FORMAT(sign_time, '%Y-%m-01') = #{signTime}
+            </if>
+        </where>
+        GROUP BY sign_date
+        ORDER BY sign_date
+    </select>
+
+    <select id="getStudentRecordsCurrentMonth"
+            resultType="com.mhua.adminbackend.pojo.vo.CoachRecordsCurrentMonth">
+        SELECT
+            DATE_FORMAT(t.sign_time, '%Y-%m-%d') AS sign_date,
+            COUNT(*) AS count
+            FROM business_student_sign_records s
+        Left join business_teacher_sign_records t on s.teacher_sign_id = t.id
+        <where>
+            <if test="signTime != null">
+                and DATE_FORMAT(t.sign_time, '%Y-%m-01') = #{signTime}
+            </if>
+        </where>
+        GROUP BY sign_date
+        ORDER BY sign_date
+    </select>
+</mapper>
