@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.TableMapper">
+
+    <insert id="insert" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+        insert into sys_table (name, create_time, update_time, create_user, update_user, `desc`) values (#{name}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser}, #{desc})
+    </insert>
+
+    <insert id="insertFields">
+        INSERT INTO sys_table_fields (name, type, constraints, table_id, create_time, update_time, create_user, update_user)
+        VALUES
+        <foreach collection="list" item="field" separator=",">
+            (#{field.name}, #{field.type}, #{field.constraints}, #{field.tableId}, #{field.createTime}, #{field.updateTime}, #{field.createUser}, #{field.updateUser})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update sys_table
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="desc != null and desc != ''">
+                `desc` = #{desc},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+    </update>
+
+    <delete id="deleteFieldsByTableId">
+        delete from sys_table_fields
+        where table_id = #{tableId}
+    </delete>
+
+    <delete id="delete">
+        DELETE FROM sys_table WHERE id = #{tableId}
+    </delete>
+
+    <delete id="deleteField">
+        DELETE FROM sys_table_fields WHERE table_id = #{fieldId}
+    </delete>
+
+    <select id="list" resultMap="tableWithFieldsResultMap">
+        SELECT
+            t.id AS tableId,
+            t.name AS tableName,
+            t.desc AS tableDesc,
+            f.id AS fieldId,
+            f.name AS fieldName,
+            f.type AS fieldType,
+            f.constraints AS fieldConstraints,
+            f.create_time,
+            f.update_time,
+            f.create_user,
+            f.update_user
+        FROM sys_table t
+                 LEFT JOIN sys_table_fields f ON t.id = f.table_id
+        <where>
+            <if test="name != null and name != ''">
+                t.name LIKE CONCAT('%', #{name})
+            </if>
+        </where>
+    </select>
+
+    <select id="findByNameOrId" resultType="com.mhua.adminbackend.pojo.entity.Table">
+        SELECT * FROM sys_table
+        <where>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="findFieldsByTableId" resultType="com.mhua.adminbackend.pojo.entity.TableField">
+        select * from sys_table_fields where table_id = #{tableId}
+    </select>
+
+    <resultMap id="tableWithFieldsResultMap" type="com.mhua.adminbackend.pojo.vo.TableVO">
+        <id property="id" column="tableId"/>
+        <result property="name" column="tableName"/>
+        <result property="desc" column="tableDesc"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+
+        <!-- 字段集合 -->
+        <collection property="fields" ofType="com.mhua.adminbackend.pojo.entity.TableField">
+            <id property="id" column="fieldId"/>
+            <result property="name" column="fieldName"/>
+            <result property="type" column="fieldType"/>
+            <result property="constraints" column="fieldConstraints"/>
+        </collection>
+    </resultMap>
+
+    <select id="getTableAndFields" resultMap="tableWithFieldsResultMap">
+        SELECT
+            t.id AS tableId,
+            t.name AS tableName,
+            t.desc AS tableDesc,
+            f.id AS fieldId,
+            f.name AS fieldName,
+            f.type AS fieldType,
+            f.constraints AS fieldConstraints
+        FROM sys_table t
+        LEFT JOIN sys_table_fields f ON t.id = f.table_id
+        WHERE t.id = #{id}
+    </select>
+
+</mapper>
