@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Aspect
 @Component
@@ -40,35 +41,40 @@ public class AutoFillAspect {
         if (args == null || args.length == 0) {
             return;
         }
-        Object entity = args[0];
-        /*准备赋值的数据*/
+        Object arg = args[0];
         LocalDateTime time = LocalDateTime.now();
         Integer id = BaseContext.getCurrentId();
-        /*根据不同的操作类型对属性赋值*/
-        if (type == OperationType.INSERT) {
-            /*为四个公共字段赋值*/
-            try {
+
+        if (arg instanceof List<?> entities) {
+            for (Object entity : entities) {
+                fillFields(entity, type, time, id);
+            }
+        } else {
+            fillFields(arg, type, time, id);
+        }
+    }
+
+    private void fillFields(Object entity, OperationType type, LocalDateTime time, Integer id) {
+        try {
+            if (type == OperationType.INSERT) {
                 Method setCreateTime = entity.getClass().getMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
                 Method setCreateUser = entity.getClass().getMethod(AutoFillConstant.SET_CREATE_USER, Integer.class);
                 Method setUpdateTime = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Integer.class);
+
                 setCreateTime.invoke(entity, time);
                 setCreateUser.invoke(entity, id);
                 setUpdateTime.invoke(entity, time);
                 setUpdateUser.invoke(entity, id);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (type == OperationType.UPDATE) {
-            /*为两个字段赋值即可*/
-            try {
+            } else if (type == OperationType.UPDATE) {
                 Method setUpdateTime = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
                 Method setUpdateUser = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Integer.class);
+
                 setUpdateTime.invoke(entity, time);
                 setUpdateUser.invoke(entity, id);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            log.error("自动填充字段失败", e);
         }
     }
 }

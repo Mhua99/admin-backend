@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/business/TeacherSignRecords")
+@RequestMapping("/business/teacherSignRecords")
 @Tag(name = "课程学习记录管理")
 public class TeacherSignRecordsController {
 

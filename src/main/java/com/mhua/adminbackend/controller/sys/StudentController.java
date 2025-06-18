@@ -1,6 +1,5 @@
 package com.mhua.adminbackend.controller.sys;
 
-import com.github.pagehelper.Page;
 import com.mhua.adminbackend.pojo.dto.StudentQueryDTO;
 import com.mhua.adminbackend.pojo.entity.Student;
 import com.mhua.adminbackend.result.PageResult;
