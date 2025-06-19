@@ -113,4 +113,8 @@
         WHERE t.id = #{id}
     </select>
 
+    <select id="getAllTable" resultType="com.mhua.adminbackend.pojo.entity.Table">
+        select * from sys_table
+    </select>
+
 </mapper>

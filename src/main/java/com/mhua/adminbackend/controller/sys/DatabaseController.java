@@ -53,4 +53,10 @@ public class DatabaseController {
     public Result<TableVO> getTable(@PathVariable("id") Integer id) {
         return Result.success(databaseService.findTableAndFields(id));
     }
+
+    @GetMapping("/all")
+    @Operation(summary = "获取所有数据库表")
+    public Result<List<Table>> getAllTable() {
+        return Result.success(databaseService.getAllTable());
+    }
 }

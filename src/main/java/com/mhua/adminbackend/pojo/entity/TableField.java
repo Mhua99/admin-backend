@@ -23,4 +23,9 @@ public class TableField extends Comm implements Serializable {
      */
     private Integer tableId;
 
+    /**
+     * 中文意思
+     */
+    private String meaning;
+
 }

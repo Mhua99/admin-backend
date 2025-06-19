@@ -216,6 +216,10 @@ public class DatabaseServiceImpl implements DatabaseService {
         return null;
     }
 
+    public List<Table> getAllTable() {
+        return tableMapper.getAllTable();
+    }
+
 
     // 修改 generateAlterTableSql 返回类型为 List<String>
     private List<String> generateAlterTableSql(String tableName, List<TableField> toAdd, List<TableField> toRemove, List<TableField> toModify) {

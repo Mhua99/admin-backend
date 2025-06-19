@@ -43,4 +43,6 @@ public interface TableMapper {
     void dropPhysicalTable(String name);
 
     void getTableAndFields(Integer id);
+
+    List<Table> getAllTable();
 }
