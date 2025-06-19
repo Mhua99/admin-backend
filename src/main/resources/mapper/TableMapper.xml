@@ -7,10 +7,10 @@
     </insert>
 
     <insert id="insertFields">
-        INSERT INTO sys_table_fields (name, type, constraints, table_id, create_time, update_time, create_user, update_user)
+        INSERT INTO sys_table_fields (name, type, constraints, table_id, create_time, update_time, create_user, update_user, meaning)
         VALUES
         <foreach collection="list" item="field" separator=",">
-            (#{field.name}, #{field.type}, #{field.constraints}, #{field.tableId}, #{field.createTime}, #{field.updateTime}, #{field.createUser}, #{field.updateUser})
+            (#{field.name}, #{field.type}, #{field.constraints}, #{field.tableId}, #{field.createTime}, #{field.updateTime}, #{field.createUser}, #{field.updateUser}, #{field.meaning})
         </foreach>
     </insert>
 
@@ -54,6 +54,7 @@
             f.name AS fieldName,
             f.type AS fieldType,
             f.constraints AS fieldConstraints,
+            f.meaning,
             f.create_time,
             f.update_time,
             f.create_user,
@@ -95,6 +96,7 @@
             <id property="id" column="fieldId"/>
             <result property="name" column="fieldName"/>
             <result property="type" column="fieldType"/>
+            <result property="meaning" column="meaning"/>
             <result property="constraints" column="fieldConstraints"/>
         </collection>
     </resultMap>

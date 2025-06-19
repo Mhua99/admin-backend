@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.ViewMapper">
+
+    <insert id="insert" keyColumn="id" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_view (table_id, config, create_time, update_time, create_user, update_user, url)
+        values (#{tableId}, #{config}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser}, #{url})
+    </insert>
+
+    <update id="update">
+        update sys_view
+        <set>
+            <if test="config != null">
+                config = #{config},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.View">
+        select * from sys_view
+        <where>
+            <if test="tableId != null">
+                AND table_id = #{tableId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" resultType="com.mhua.adminbackend.pojo.entity.View">
+        select * from sys_view where id = #{id}
+    </select>
+</mapper>

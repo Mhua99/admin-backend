@@ -53,6 +53,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     entity.setType(field.getType());
                     entity.setConstraints(field.getConstraints());
                     entity.setTableId(tableId); // 设置外键
+                    entity.setMeaning(field.getMeaning());
                     return entity;
                 })
                 .toList();
@@ -108,8 +109,6 @@ public class DatabaseServiceImpl implements DatabaseService {
         if (existing == null) {
             throw new RuntimeException("找不到指定的表记录: ID = " + tableId);
         }
-
-
 
         // 获取新字段列表
         List<TableField> newFields = tableDTO.getFields();
@@ -172,6 +171,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     entity.setType(field.getType());
                     entity.setConstraints(field.getConstraints());
                     entity.setTableId(tableId);
+                    entity.setMeaning(field.getMeaning());
                     return entity;
                 })
                 .toList();
