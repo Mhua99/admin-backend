@@ -67,8 +67,10 @@ public class DatabaseServiceImpl implements DatabaseService {
         sql.append(name).append(" (");
 
         sql.append("id INT AUTO_INCREMENT PRIMARY KEY, ")
-                .append("createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ")
-                .append("createUser INT, ");
+                .append("create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ")
+                .append("update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ")
+                .append("create_user INT, ")
+                .append("update_user INT, ");
         for (int i = 0; i < fields.size(); i++) {
             TableField field = fields.get(i);
             sql.append(field.getName()).append(" ").append(field.getType());

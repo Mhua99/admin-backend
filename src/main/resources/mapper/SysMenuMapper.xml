@@ -63,5 +63,6 @@
             p.name AS parentName
         FROM sys_menu m
                  LEFT JOIN sys_menu p ON m.parent_id = p.id
+        where m.status is null;
     </select>
 </mapper>

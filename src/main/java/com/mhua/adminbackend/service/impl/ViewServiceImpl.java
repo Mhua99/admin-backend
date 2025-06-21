@@ -7,6 +7,7 @@ import com.mhua.adminbackend.mapper.ViewMapper;
 import com.mhua.adminbackend.pojo.dto.ViewDTO;
 import com.mhua.adminbackend.pojo.entity.TableField;
 import com.mhua.adminbackend.pojo.entity.View;
+import com.mhua.adminbackend.pojo.vo.ViewAllVO;
 import com.mhua.adminbackend.pojo.vo.ViewVO;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.service.ViewService;
@@ -43,7 +44,7 @@ public class ViewServiceImpl implements ViewService {
     }
 
     public View insert(View view) {
-        view.setUrl(RandomChart.generateRandomLetters(10));
+        view.setSign(RandomChart.generateRandomLetters(10));
         viewMapper.insert(view);
 
         return viewMapper.getById(view.getId());
@@ -68,5 +69,15 @@ public class ViewServiceImpl implements ViewService {
     public View update(View view) {
         viewMapper.update(view);
         return viewMapper.getById(view.getId());
+    }
+
+    public Boolean delete(List<Integer> ids) {
+        return viewMapper.delete(ids);
+    }
+
+    public List<ViewAllVO> getAll() {
+        List<ViewAllVO> list = viewMapper.getAll();
+
+        return list.stream().peek(view -> view.setUrl("/system/comm")).toList();
     }
 }

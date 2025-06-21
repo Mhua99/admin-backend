@@ -10,13 +10,10 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class View extends Comm implements Serializable {
-
-    private Integer tableId;
-
-    private String config;
+public class Dic extends Comm implements Serializable {
 
     private String sign;
 
     private String name;
+
 }

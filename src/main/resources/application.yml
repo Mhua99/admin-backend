@@ -5,7 +5,7 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: jdbc:mysql://localhost:3306/admin_backend?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/admin_backend?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -47,3 +47,16 @@ knife4j:
   production: false # 开发环境关闭鉴权
   setting:
     language: zh_cn
+
+logging:
+  level:
+    com.mhua.adminbackend.mapper: debug
+    java.sql: debug
+    javax.sql: debug
+    org.mybatis: debug
+
+
+  spring:
+    jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: Asia/Shanghai

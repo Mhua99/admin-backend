@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mhua.adminbackend.mapper.DicMapper">
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" keyColumn="id">
+        INSERT INTO sys_dic (name, sign, create_user, update_user, create_time, update_time)
+        VALUES (#{name}, #{sign}, #{createUser}, #{updateUser}, #{createTime}, #{updateTime});
+    </insert>
+
+    <insert id="insertItem">
+        insert into sys_dic_item (parent_id, label, value, create_time, update_time, create_user, update_user) VALUES
+              <foreach collection="dicItem" item="item" separator=",">
+                  (#{item.parentId}, #{item.label}, #{item.value}, #{item.createTime}, #{item.updateTime}, #{item.createUser}, #{item.updateUser})
+              </foreach>
+    </insert>
+
+    <update id="update">
+        -- 更新主表 sys_dic
+        UPDATE sys_dic
+        SET name = #{name},
+        sign = #{sign},
+        update_user = #{updateUser},
+        update_time = #{updateTime}
+        WHERE id = #{id};
+
+        -- 先删除原有子表数据
+        DELETE FROM sys_dic_item WHERE parent_id = #{id};
+
+        -- 再插入新的子表数据
+        <foreach collection="dicItemList" item="item">
+            INSERT INTO sys_dic_item (parent_id, label, value, update_user,  update_time)
+            VALUES (#{id}, #{item.label}, #{item.value}, #{updateUser}, #{updateTime});
+        </foreach>
+    </update>
+
+    <update id="existsBySign">
+        SELECT COUNT(*) FROM sys_dic WHERE sign = #{sign}
+    </update>
+
+    <delete id="delete">
+        -- 先删除子表数据
+        DELETE FROM sys_dic_item WHERE parent_id = #{id};
+
+        -- 再删除主表数据
+        DELETE FROM sys_dic WHERE id = #{id};
+    </delete>
+
+    <select id="list" resultType="com.mhua.adminbackend.pojo.entity.Dic">
+        select * from sys_dic
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="sign != null and sign != ''">
+                AND sign LIKE CONCAT('%', #{sign}, '%')
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="DicVOResultMap" type="com.mhua.adminbackend.pojo.vo.DicVO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sign" column="sign"/>
+
+        <!-- 一对多映射：关联 sys_dic_item -->
+        <collection property="dicItemList" ofType="com.mhua.adminbackend.pojo.vo.DicItemVO">
+            <id property="id" column="itemId"/>
+            <result property="label" column="label"/>
+            <result property="value" column="value"/>
+            <result property="parentId" column="parent_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="getById" resultMap="DicVOResultMap">
+        SELECT
+            d.*,
+            i.id AS itemId,
+            i.parent_id,
+            i.label,
+            i.value
+        FROM sys_dic d
+                 LEFT JOIN sys_dic_item i ON d.id = i.parent_id
+        WHERE d.id = #{id}
+    </select>
+
+    <select id="getItemBySign" resultType="com.mhua.adminbackend.pojo.entity.DicItem">
+        select d.sign, i.id, i.label, i.value, i.update_time, i.update_user from sys_dic_item i left join sys_dic d on i.parent_id = d.id where d.sign = #{sign}
+    </select>
+</mapper>

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Aspect
 @Component
@@ -45,7 +46,23 @@ public class AutoFillAspect {
         LocalDateTime time = LocalDateTime.now();
         Integer id = BaseContext.getCurrentId();
 
-        if (arg instanceof List<?> entities) {
+        if(args.length >1  && args[1] != null){
+            Object argMap = args[1];
+
+            if (argMap instanceof Map<?, ?> rawMap) {
+                Map<String, Object> map = (Map<String, Object>) rawMap;
+                if(type == OperationType.INSERT) {
+                    map.put("create_time", time);
+                    map.put("update_time", time);
+                    map.put("create_user", id);
+                    map.put("update_user", id);
+                } else {
+                    map.put("update_time", time);
+                    map.put("update_user", id);
+                }
+            }
+        }
+        else if (arg instanceof List<?> entities) {
             for (Object entity : entities) {
                 fillFields(entity, type, time, id);
             }
