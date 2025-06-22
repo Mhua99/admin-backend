@@ -47,4 +47,6 @@ public interface TableMapper {
     List<Table> getAllTable();
 
     Integer findLocalTable(String name);
+
+    List<TableField> getTableField(Integer id);
 }

@@ -2,6 +2,7 @@ package com.mhua.adminbackend.controller.sys;
 
 import com.mhua.adminbackend.pojo.dto.TableDTO;
 import com.mhua.adminbackend.pojo.entity.Table;
+import com.mhua.adminbackend.pojo.entity.TableField;
 import com.mhua.adminbackend.pojo.vo.TableVO;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.result.Result;
@@ -58,5 +59,11 @@ public class DatabaseController {
     @Operation(summary = "获取所有数据库表")
     public Result<List<Table>> getAllTable() {
         return Result.success(databaseService.getAllTable());
+    }
+
+    @GetMapping("/field")
+    @Operation(summary = "获取数据库表字段")
+    public Result<List<TableField>> getAllTable(Integer id) {
+        return Result.success(databaseService.getTableField(id));
     }
 }

@@ -2,6 +2,7 @@ package com.mhua.adminbackend.service;
 
 import com.mhua.adminbackend.pojo.dto.TableDTO;
 import com.mhua.adminbackend.pojo.entity.Table;
+import com.mhua.adminbackend.pojo.entity.TableField;
 import com.mhua.adminbackend.pojo.vo.TableVO;
 import com.mhua.adminbackend.result.PageResult;
 
@@ -19,4 +20,6 @@ public interface DatabaseService {
     TableVO findTableAndFields(Integer id);
 
     List<Table> getAllTable();
+
+    List<TableField> getTableField(Integer id);
 }

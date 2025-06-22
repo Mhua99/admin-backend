@@ -28,4 +28,9 @@ public class TableField extends Comm implements Serializable {
      */
     private String meaning;
 
+    /**
+     * 排序
+     */
+    private Integer sort;
+
 }

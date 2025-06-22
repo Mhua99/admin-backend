@@ -48,6 +48,7 @@ public class DatabaseServiceImpl implements DatabaseService {
         tableEntity.setName(name);
         tableEntity.setDesc(tableDTO.getDesc());
         tableMapper.insert(tableEntity); // 插入主表
+
         // 获取刚插入的主表 ID
         Integer tableId = tableEntity.getId();
 
@@ -60,6 +61,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     entity.setConstraints(field.getConstraints());
                     entity.setTableId(tableId); // 设置外键
                     entity.setMeaning(field.getMeaning());
+                    entity.setSort(field.getSort());
                     return entity;
                 })
                 .toList();
@@ -67,24 +69,34 @@ public class DatabaseServiceImpl implements DatabaseService {
         tableMapper.insertFields(fieldList);
 
         /**
-         * 并且创建数据库表
+         * 创建数据库表的 SQL 构建逻辑
          */
-        StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
-        sql.append(name).append(" (");
+        StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
+        sql.append(name).append("` (");
 
+        // 系统字段
         sql.append("id INT AUTO_INCREMENT PRIMARY KEY, ")
-                .append("create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ")
-                .append("update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ")
-                .append("create_user INT, ")
-                .append("update_user INT, ");
-        for (int i = 0; i < fields.size(); i++) {
-            TableField field = fields.get(i);
-            sql.append(field.getName()).append(" ").append(field.getType());
-            if (field.getConstraints() != null && !field.getConstraints().isEmpty()) {
-                sql.append(" ").append(field.getConstraints());
+                .append("`create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ")
+                .append("`update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, ")
+                .append("`create_user` INT, ")
+                .append("`update_user` INT");
+
+        // 添加自定义字段
+        for (TableField field : fields) {
+            if (field.getName() == null || field.getName().trim().isEmpty()) {
+                throw new BaseException("字段名不能为空");
             }
-            if (i < fields.size() - 1) {
-                sql.append(", ");
+            if (field.getType() == null || field.getType().trim().isEmpty()) {
+                throw new BaseException("字段类型不能为空");
+            }
+
+            sql.append(", `")
+                    .append(field.getName())
+                    .append("` ")
+                    .append(field.getType());
+
+            if (field.getConstraints() != null && !field.getConstraints().trim().isEmpty()) {
+                sql.append(" ").append(field.getConstraints());
             }
         }
 
@@ -180,6 +192,7 @@ public class DatabaseServiceImpl implements DatabaseService {
                     entity.setConstraints(field.getConstraints());
                     entity.setTableId(tableId);
                     entity.setMeaning(field.getMeaning());
+                    entity.setSort(field.getSort());
                     return entity;
                 })
                 .toList();
@@ -226,6 +239,10 @@ public class DatabaseServiceImpl implements DatabaseService {
 
     public List<Table> getAllTable() {
         return tableMapper.getAllTable();
+    }
+
+    public List<TableField> getTableField(Integer id) {
+        return tableMapper.getTableField(id);
     }
 
 

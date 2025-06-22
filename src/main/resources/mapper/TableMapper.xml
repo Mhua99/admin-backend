@@ -7,10 +7,10 @@
     </insert>
 
     <insert id="insertFields">
-        INSERT INTO sys_table_fields (name, type, constraints, table_id, create_time, update_time, create_user, update_user, meaning)
+        INSERT INTO sys_table_fields (name, type, constraints, table_id, create_time, update_time, create_user, update_user, meaning, sort)
         VALUES
         <foreach collection="list" item="field" separator=",">
-            (#{field.name}, #{field.type}, #{field.constraints}, #{field.tableId}, #{field.createTime}, #{field.updateTime}, #{field.createUser}, #{field.updateUser}, #{field.meaning})
+            (#{field.name}, #{field.type}, #{field.constraints}, #{field.tableId}, #{field.createTime}, #{field.updateTime}, #{field.createUser}, #{field.updateUser}, #{field.meaning}, #{field.sort})
         </foreach>
     </insert>
 
@@ -66,6 +66,7 @@
                 t.name LIKE CONCAT('%', #{name})
             </if>
         </where>
+        order by f.sort
     </select>
 
     <select id="findByNameOrId" resultType="com.mhua.adminbackend.pojo.entity.Table">
@@ -121,6 +122,10 @@
 
     <select id="findLocalTable" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'admin_backend' AND TABLE_NAME = #{name};
+    </select>
+
+    <select id="getTableField">
+        select * from sys_table_fields where table_id = #{id}
     </select>
 
 </mapper>
