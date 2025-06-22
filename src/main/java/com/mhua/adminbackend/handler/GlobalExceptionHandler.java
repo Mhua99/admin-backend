@@ -12,10 +12,7 @@ import  com.mhua.adminbackend.constant.HttpStatusConstant;
 /**
  * 全局异常处理器，处理项目中抛出的业务异常
  */
-//@RestControllerAdvice(
-//        basePackages = "com.mhua.adminbackend.controller",
-//        annotations = RestController.class
-//)
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 

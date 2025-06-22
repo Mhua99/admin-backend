@@ -2,6 +2,7 @@ package com.mhua.adminbackend.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.mhua.adminbackend.exception.BaseException;
 import com.mhua.adminbackend.mapper.TableMapper;
 import com.mhua.adminbackend.pojo.dto.TableDTO;
 import com.mhua.adminbackend.pojo.entity.Table;
@@ -35,7 +36,12 @@ public class DatabaseServiceImpl implements DatabaseService {
         // 查询是否已有同名表
         Table existing = tableMapper.findByNameOrId(tableDTO);
         if (existing != null) {
-            throw new RuntimeException("表名已存在: " + name);
+            throw new BaseException("表名已存在: " + name);
+        }
+
+        Integer count = tableMapper.findLocalTable(name);
+        if(count > 0){
+            throw new BaseException("表名已存在: " + name);
         }
 
         Table tableEntity = new Table();

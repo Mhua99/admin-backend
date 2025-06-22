@@ -119,4 +119,8 @@
         select * from sys_table
     </select>
 
+    <select id="findLocalTable" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'admin_backend' AND TABLE_NAME = #{name};
+    </select>
+
 </mapper>

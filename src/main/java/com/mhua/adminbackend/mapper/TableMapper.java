@@ -45,4 +45,6 @@ public interface TableMapper {
     void getTableAndFields(Integer id);
 
     List<Table> getAllTable();
+
+    Integer findLocalTable(String name);
 }
