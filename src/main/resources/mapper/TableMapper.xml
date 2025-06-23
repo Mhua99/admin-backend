@@ -144,7 +144,7 @@
         SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'admin_backend' AND TABLE_NAME = #{name};
     </select>
 
-    <select id="getTableField">
+    <select id="getTableField" resultType="com.mhua.adminbackend.pojo.entity.TableField">
         select * from sys_table_fields where table_id = #{id}
     </select>
 
