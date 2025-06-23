@@ -30,6 +30,7 @@
                 update_user = #{updateUser},
             </if>
         </set>
+        where id = #{id}
     </update>
 
     <delete id="deleteFieldsByTableId">
@@ -45,28 +46,47 @@
         DELETE FROM sys_table_fields WHERE table_id = #{fieldId}
     </delete>
 
-    <select id="list" resultMap="tableWithFieldsResultMap">
-        SELECT
-            t.id AS tableId,
-            t.name AS tableName,
-            t.desc AS tableDesc,
-            f.id AS fieldId,
-            f.name AS fieldName,
-            f.type AS fieldType,
-            f.constraints AS fieldConstraints,
-            f.meaning,
-            f.create_time,
-            f.update_time,
-            f.create_user,
-            f.update_user
+<!--    <select id="list" resultMap="tableWithFieldsResultMap">-->
+<!--        SELECT-->
+<!--            t.id AS tableId,-->
+<!--            t.name AS tableName,-->
+<!--            t.desc AS tableDesc,-->
+<!--            f.id AS fieldId,-->
+<!--            f.name AS fieldName,-->
+<!--            f.type AS fieldType,-->
+<!--            f.constraints AS fieldConstraints,-->
+<!--            f.meaning,-->
+<!--            f.create_time,-->
+<!--            f.update_time,-->
+<!--            f.create_user,-->
+<!--            f.update_user-->
+<!--        FROM sys_table t-->
+<!--                 LEFT JOIN sys_table_fields f ON t.id = f.table_id-->
+<!--        <where>-->
+<!--            <if test="name != null and name != ''">-->
+<!--                t.name LIKE CONCAT('%', #{name})-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        order by f.sort-->
+<!--    </select>-->
+
+
+    <select id="listTable" resultType="com.mhua.adminbackend.pojo.entity.Table">
+        SELECT *
         FROM sys_table t
-                 LEFT JOIN sys_table_fields f ON t.id = f.table_id
         <where>
             <if test="name != null and name != ''">
                 t.name LIKE CONCAT('%', #{name})
             </if>
         </where>
-        order by f.sort
+    </select>
+
+    <select id="listTableField" resultType="com.mhua.adminbackend.pojo.entity.TableField">
+        SELECT * FROM sys_table_fields
+        WHERE table_id IN
+        <foreach collection="tableIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
 
     <select id="findByNameOrId" resultType="com.mhua.adminbackend.pojo.entity.Table">

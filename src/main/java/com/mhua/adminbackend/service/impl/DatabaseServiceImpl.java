@@ -11,14 +11,12 @@ import com.mhua.adminbackend.pojo.vo.TableVO;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.service.DatabaseService;
 import com.mhua.adminbackend.utils.NumberUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -113,8 +111,28 @@ public class DatabaseServiceImpl implements DatabaseService {
 
         PageHelper.startPage(page, pageSize);
 
-        Page<TableVO> pageList = tableMapper.list(tableDTO);
-        return new PageResult<>(pageList.getTotal(), pageList.getResult());
+        Page<Table> tableList = tableMapper.listTable(tableDTO);
+
+        // 提取所有主表 ID
+        List<Integer> tableIds = tableList.stream().map(Table::getId).toList();
+
+        // 查询所有子表字段
+        List<TableField> tableFields = tableMapper.listTableField(tableIds);
+
+        // 按 tableId 分组
+        Map<Integer, List<TableField>> fieldMap = tableFields.stream()
+                .collect(Collectors.groupingBy(TableField::getTableId));
+
+        List<TableVO> voList = tableList.getResult().stream()
+                .map(t -> {
+                    TableVO vo = new TableVO();
+                    BeanUtils.copyProperties(t, vo);
+                    vo.setFields(fieldMap.getOrDefault(t.getId(), Collections.emptyList()));
+                    return vo;
+                })
+                .collect(Collectors.toList());
+
+        return new PageResult<>(tableList.getTotal(), voList);
     }
 
     @Transactional

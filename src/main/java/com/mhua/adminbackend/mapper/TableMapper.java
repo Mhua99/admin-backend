@@ -25,7 +25,9 @@ public interface TableMapper {
     @UpdateProvider(type = SqlProvider.class, method = "createTableSql")
     void createTable(StringBuilder sql);
 
-    Page<TableVO> list(TableDTO TableVO);
+    Page<Table> listTable(TableDTO TableVO);
+
+    List<TableField> listTableField(List<Integer> tableIds);
 
     Table findByNameOrId(TableDTO tableDTO);
 
