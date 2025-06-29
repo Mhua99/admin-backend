@@ -115,7 +115,7 @@ public class FlowController {
     public Result create(@RequestBody Map<String, String> body) {
         String bpmnXml = body.get("bpmnXml");
         String name = body.get("name");
-        String key = body.get("key");
+        String key = body.get("processDefinitionKey");
         if (bpmnXml == null || bpmnXml.isEmpty()) {
             throw new BaseException("BPMN内容不能为空");
         }
