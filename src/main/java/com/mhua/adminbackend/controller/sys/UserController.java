@@ -65,4 +65,10 @@ public class UserController {
     public Result<SysUserLoginVO> login(@RequestBody SysUserLoginDTO sysUserLoginDTO) {
         return Result.success(sysUserService.login(sysUserLoginDTO));
     }
+
+    @GetMapping("/all")
+    @Operation(summary = "获取所有用户")
+    public Result<List<SysUserVO>> getAll() {
+        return Result.success(sysUserService.getAll());
+    }
 }

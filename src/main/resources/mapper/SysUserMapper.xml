@@ -80,4 +80,8 @@
     <select id="getByNameAndPassword" resultType="com.mhua.adminbackend.pojo.entity.SysUser">
         SELECT * FROM sys_user WHERE username = #{username} and password = #{password}
     </select>
+
+    <select id="getAll" resultType="com.mhua.adminbackend.pojo.vo.SysUserVO">
+        select * from sys_user
+    </select>
 </mapper>

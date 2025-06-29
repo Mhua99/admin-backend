@@ -2,7 +2,6 @@ package com.mhua.adminbackend.controller.sys;
 
 import com.mhua.adminbackend.pojo.dto.SysMenuQueryDTO;
 import com.mhua.adminbackend.pojo.entity.SysMenu;
-import com.mhua.adminbackend.pojo.entity.SysUser;
 import com.mhua.adminbackend.pojo.vo.SysMenuTreeVO;
 import com.mhua.adminbackend.result.PageResult;
 import com.mhua.adminbackend.result.Result;

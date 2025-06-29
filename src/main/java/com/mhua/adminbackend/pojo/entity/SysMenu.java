@@ -30,4 +30,6 @@ public class SysMenu extends Comm implements Serializable {
 
     private String parentName;
 
+    private Integer sort;
+
 }

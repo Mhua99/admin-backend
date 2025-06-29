@@ -94,6 +94,14 @@
             <version>2.3.1</version>
         </dependency>
 
+        <!-- Flowable 核心模块 -->
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter</artifactId>
+            <version>7.1.0</version> <!-- 使用最新稳定版本 -->
+        </dependency>
+
+
     </dependencies>
 
     <build>

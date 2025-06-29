@@ -142,4 +142,9 @@ public class SysUserServiceImpl implements SysUserService {
 
         return new SysUserLoginVO(token, user.getId());
     }
+
+    @Override
+    public List<SysUserVO> getAll() {
+        return sysUserMapper.getAll();
+    }
 }

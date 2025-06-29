@@ -21,4 +21,6 @@ public interface SysUserService {
     SysUserVO getById(Integer id);
 
     SysUserLoginVO login(SysUserLoginDTO sysUserLoginDTO);
+
+    List<SysUserVO> getAll();
 }

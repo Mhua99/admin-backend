@@ -5,6 +5,7 @@ import com.mhua.adminbackend.annotation.AutoFill;
 import com.mhua.adminbackend.enumeration.OperationType;
 import com.mhua.adminbackend.pojo.dto.SysUserQueryDTO;
 import com.mhua.adminbackend.pojo.entity.SysUser;
+import com.mhua.adminbackend.pojo.vo.SysUserVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -28,4 +29,6 @@ public interface SysUserMapper {
     int existsByUsername(@Param("username") String username);
 
     int existsByUsernameAndId(@Param("username") String username, @Param("id") Integer id);
+
+    List<SysUserVO> getAll();
 }
