@@ -52,7 +52,7 @@ public class FlowController {
 
     // 查询流程定义列表
     @GetMapping("/list")
-    public Result<PageResult<ProcessModal>> list(ProcessDefinitionDTO processDefinitionDTO) {
+    public Result<PageResult<ProcessModal>> list(ProcessDefinitionDTO processDefinitionDTO) throws IOException {
         ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery();
 
         String processDefinitionKey = processDefinitionDTO.getProcessDefinitionKey();
@@ -74,17 +74,25 @@ public class FlowController {
                 .asc()
                 .listPage(processDefinitionDTO.getPage() - 1, processDefinitionDTO.getPageSize());
 
+//        for (ProcessDefinition definition : list) {
+//            InputStream xmlStream = repositoryService.getProcessModel(definition.getId());
+//            String xmlContent = IOUtils.toString(xmlStream, StandardCharsets.UTF_8);
+//            System.out.println(xmlContent); // 打印 XML 内容
+//        }
+
         // 总数
         long total = countProcessDefinitionQuery.count();
 
         List<ProcessModal> result = new ArrayList<>();
         for (ProcessDefinition pd : list) {
+            InputStream xmlStream = repositoryService.getProcessModel(pd.getId());
             ProcessModal processModal = new ProcessModal();
             processModal.setId(pd.getId());
             processModal.setName(pd.getName());
             processModal.setProcessDefinitionKey(pd.getKey());
             processModal.setVersion(pd.getVersion());
             processModal.setDeploymentId(pd.getDeploymentId());
+            processModal.setBpmnXml(IOUtils.toString(xmlStream, StandardCharsets.UTF_8));
             result.add(processModal);
         }
         return Result.success(new PageResult(total, result));
@@ -151,6 +159,7 @@ public class FlowController {
             InputStream inputStream = new ByteArrayInputStream(newBpmnXml.getBytes(StandardCharsets.UTF_8));
             repositoryService.createDeployment()
                     .addInputStream("process.bpmn20.xml", inputStream)
+                    .name(name)
                     .deploy();
             return Result.success("部署成功");
         } catch (Exception e) {
@@ -166,7 +175,12 @@ public class FlowController {
     @PutMapping
     public Result update(@RequestBody Map<String, Object> body) {
         String bpmnXml = (String) body.get("bpmnXml");
+        String name = (String) body.get("name");
         String processKey = (String) body.get("processDefinitionKey");
+
+        /**
+         * 是否新建部署
+         */
         Boolean isNewDeployment = (Boolean) body.getOrDefault("isNew", false);
 
         if (bpmnXml == null || bpmnXml.isEmpty()) {
@@ -178,18 +192,21 @@ public class FlowController {
         InputStream inputStream = new ByteArrayInputStream(modifiedBpmnXml.getBytes(StandardCharsets.UTF_8));
 
         if (isNewDeployment) {
+            /**
+             * 发布新版本
+             */
             Map<String, Object> variables = new HashMap<>();
             variables.put("approvalLevel", 3);
             variables.put("department", "财务部");
             // 发布为新流程定义
             repositoryService.createDeployment()
-                    .name("Deployment-" + System.currentTimeMillis())
-                    .key(UUID.randomUUID().toString())  // 使用唯一 Key 确保是新流程
                     .addInputStream("process.bpmn20.xml", inputStream)
                     .deploy();
             return Result.success("新流程已发布");
         } else {
-            // 查找已有流程定义
+            /**
+             * 更新原有版本
+             */
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                     .processDefinitionKey(processKey)
                     .latestVersion()
@@ -208,7 +225,7 @@ public class FlowController {
                     .key(processDefinition.getKey())
                     .addInputStream("process.bpmn20.xml", inputStream)
                     .deploy();
-            return Result.success("流程图已更新（未新增版本）");
+            return Result.success("流程图已更新");
         }
     }
 
