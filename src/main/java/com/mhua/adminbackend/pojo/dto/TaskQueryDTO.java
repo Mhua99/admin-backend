@@ -16,4 +16,6 @@ public class TaskQueryDTO extends PageComm implements Serializable {
     private String processDefinitionKey;
 
     private String historyId;
+
+    private String processDefinitionName;
 }

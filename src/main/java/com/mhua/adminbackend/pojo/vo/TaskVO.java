@@ -30,4 +30,7 @@ public class TaskVO implements Serializable {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Shanghai")
     private Date createTime;
+
+    private String processDefinitionName;
+
 }

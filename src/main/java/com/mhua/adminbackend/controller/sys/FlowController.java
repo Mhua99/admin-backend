@@ -546,38 +546,81 @@ public class FlowController {
     public Result todo(TaskQueryDTO taskQueryDTO) {
         Integer id = BaseContext.get("userId");
         String assignee = String.valueOf(id);
+        String processDefinitionName = taskQueryDTO.getProcessDefinitionName();  // 新增参数
 
-        List<TaskVO> records = new ArrayList<>();
-        long count = 0;
+        List<TaskVO> records;
+        long count;
 
         if ("todo".equals(taskQueryDTO.getType())) {
             // 查询待办任务
             List<Task> tasks = taskService.createTaskQuery()
                     .taskAssignee(assignee)
                     .orderByTaskCreateTime().desc()
-                    .listPage(taskQueryDTO.getPage() - 1, taskQueryDTO.getPageSize());
+                    .list();
 
-            count = taskService.createTaskQuery().taskAssignee(assignee).count();
-
+            // 转换并过滤
             records = tasks.stream()
-                    .map(this::convertToTaskVO)
+                    .map(task -> {
+                        TaskVO vo = convertToTaskVO(task);
+                        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                                .processInstanceId(task.getProcessInstanceId())
+                                .singleResult();
+                        if (processInstance != null) {
+                            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                                    .processDefinitionId(processInstance.getProcessDefinitionId())
+                                    .singleResult();
+                            if (processDefinition != null) {
+                                vo.setProcessDefinitionName(processDefinition.getName());
+                            }
+                        }
+                        return vo;
+                    })
+                    .filter(vo -> {
+                        if (processDefinitionName == null || processDefinitionName.isEmpty()) {
+                            return true; // 无条件放行
+                        }
+                        return vo.getProcessDefinitionName() != null &&
+                                vo.getProcessDefinitionName().contains(processDefinitionName);
+                    })
+                    .skip((taskQueryDTO.getPage() - 1) * taskQueryDTO.getPageSize())
+                    .limit(taskQueryDTO.getPageSize())
                     .toList();
+
+            count = records.size(); // 如果要精确分页，应先查出全部再过滤
+
         } else if ("done".equals(taskQueryDTO.getType())) {
             // 查询已办任务
             List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
                     .taskAssignee(assignee)
                     .finished()
                     .orderByHistoricTaskInstanceEndTime().desc()
-                    .listPage(taskQueryDTO.getPage() - 1, taskQueryDTO.getPageSize());
+                    .list();
 
-            count = historyService.createHistoricTaskInstanceQuery()
-                    .taskAssignee(assignee)
-                    .finished()
-                    .count();
-
+            // 转换并过滤
             records = historicTaskInstances.stream()
-                    .map(this::convertToTaskVOFromHistory)
+                    .map(instance -> {
+                        TaskVO vo = convertToTaskVOFromHistory(instance);
+                        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
+                                .processInstanceId(instance.getProcessInstanceId())
+                                .singleResult();
+                        if (historicProcessInstance != null) {
+                            vo.setProcessDefinitionName(historicProcessInstance.getProcessDefinitionName());
+                        }
+                        return vo;
+                    })
+                    .filter(vo -> {
+                        if (processDefinitionName == null || processDefinitionName.isEmpty()) {
+                            return true;
+                        }
+                        return vo.getProcessDefinitionName() != null &&
+                                vo.getProcessDefinitionName().contains(processDefinitionName);
+                    })
+                    .skip((taskQueryDTO.getPage() - 1) * taskQueryDTO.getPageSize())
+                    .limit(taskQueryDTO.getPageSize())
                     .toList();
+
+            count = records.size();
+
         } else {
             return Result.error("类型错误，支持: todo / done");
         }
