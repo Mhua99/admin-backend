@@ -1,6 +1,10 @@
 package com.mhua.adminbackend.controller.sys;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mhua.adminbackend.adapter.LocalDateTimeTypeAdapter;
+import com.mhua.adminbackend.adapter.LocalDateTypeAdapter;
+import com.mhua.adminbackend.adapter.LocalTimeTypeAdapter;
 import com.mhua.adminbackend.exception.BaseException;
 import com.mhua.adminbackend.pojo.dto.ProcessDefinitionDTO;
 import com.mhua.adminbackend.pojo.dto.TaskQueryDTO;
@@ -49,6 +53,9 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import static com.mhua.adminbackend.utils.DateFormatterUtils.formatDuration;
@@ -76,6 +83,11 @@ public class FlowController {
     @Autowired
     private CommService commService;
 
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+            .registerTypeAdapter(LocalDate.class, new LocalDateTypeAdapter())
+            .registerTypeAdapter(LocalTime.class, new LocalTimeTypeAdapter())
+            .create();
 
     // 部署流程
     @PostMapping("/deploy")
@@ -320,7 +332,7 @@ public class FlowController {
             // ✅ 获取任务变量
             Map<String, Object> variables = taskService.getVariables(taskId);
             String formDataStr = variables.get("formData").toString();
-            result.put("formData",new Gson().fromJson(formDataStr, Map.class));
+            result.put("formData",gson.fromJson(formDataStr, Map.class));
 
             // 获取当前节点
             currentElement = process.getFlowElement(task.getTaskDefinitionKey());
@@ -348,7 +360,7 @@ public class FlowController {
 
             Map<String, Object> variables = new HashMap<>();
             for (HistoricVariableInstance variable : variableInstances) {
-                result.put("formData",new Gson().fromJson((String) variable.getValue(), Map.class));
+                result.put("formData",gson.fromJson((String) variable.getValue(), Map.class));
             }
 
             currentElement = process.getFlowElement(taskDefinitionKey);
@@ -499,6 +511,11 @@ public class FlowController {
     @Transactional
     public Result startProcess(@RequestBody Map<String, Object> params) {
         Map<String, Object> variables = new HashMap<>();
+        String processDefinitionKey = (String)params.get("processDefinitionKey");
+
+        if(processDefinitionKey == null || processDefinitionKey.isEmpty()) {
+            throw new BaseException("processDefinitionKey 不能为空");
+        }
 
         Object formData = params.get("formData");
         Map<String, Object> variableFormData;
@@ -517,19 +534,19 @@ public class FlowController {
 
         variableFormData.put("form_process_key", (String) params.get("sign"));
         // ✅ 将对象转成 JSON 字符串
-        String variableFormDataJson = new Gson().toJson(variableFormData);
+        String variableFormDataJson = gson.toJson(variableFormData);
         variables.put("formData", variableFormDataJson);
 
         Map<String, Object> poinionMap = new HashMap<>();
         if(approveForm instanceof Map) {
             poinionMap.put("start", ((Map<?, ?>) approveForm).get("opinion"));
-            variables.put("opinion", new Gson().toJson(poinionMap));
+            variables.put("opinion", gson.toJson(poinionMap));
         }
 
         // ✅ 主动设置 initiator
         Integer userId = BaseContext.get("userId");  // 获取当前用户
 
-        ProcessInstance test = runtimeService.startProcessInstanceByKey("test", variables);
+        ProcessInstance test = runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
 
         // ✅ 再次确认变量是否设置成功
         runtimeService.setVariable(test.getId(), "initiator", userId);
@@ -649,12 +666,12 @@ public class FlowController {
             ((Map<?, ?>) approveForm).forEach((key, value) -> variables.put(key.toString(), value));
         }
         Map<String, Object> allVariables = taskService.getVariables(taskId);
-        Map<String, Object> opinion = new Gson().fromJson((String) allVariables.get("opinion"), Map.class);
+        Map<String, Object> opinion = gson.fromJson((String) allVariables.get("opinion"), Map.class);
         opinion.put(taskId, ((Map<?, ?>) approveForm).get("opinion"));
-        variables.put("opinion", new Gson().toJson(opinion));
+        variables.put("opinion", gson.toJson(opinion));
         variableFormData.put("form_process_key", (String) params.get("sign"));
         // ✅ 将对象转成 JSON 字符串
-        String variableFormDataJson = new Gson().toJson(variableFormData);
+        String variableFormDataJson = gson.toJson(variableFormData);
         variables.put("formData", variableFormDataJson);
 
         taskService.complete(taskId, variables);
@@ -755,7 +772,7 @@ public class FlowController {
 
         HistoricVariableInstance historicVariableInstance = opinionVarList.get(0);
         taskList.forEach(item ->{
-            Map map = new Gson().fromJson((String) historicVariableInstance.getValue(), Map.class);
+            Map map = gson.fromJson((String) historicVariableInstance.getValue(), Map.class);
             item.put("opinion", map.get(item.get("taskId")));
         });
 
