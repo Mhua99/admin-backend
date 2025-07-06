@@ -15,13 +15,14 @@ spring:
       auto-commit: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
+    time-zone: Asia/Shanghai
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.mhua.adminbackend
   configuration:
     mapUnderscoreToCamelCase: true # 推荐使用驼峰命名法映射字段
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 mhua:
   jwt:
@@ -56,7 +57,10 @@ logging:
     org.mybatis: debug
 
 
-  spring:
-    jackson:
-      date-format: yyyy-MM-dd HH:mm:ss
-      time-zone: Asia/Shanghai
+flowable:
+  async-executor-activate: false
+  database-schema-update: true
+  history:
+    enabled: true
+    level: audit
+

@@ -44,7 +44,7 @@ public class AutoFillAspect {
         }
         Object arg = args[0];
         LocalDateTime time = LocalDateTime.now();
-        Integer id = BaseContext.getCurrentId();
+        Integer id = BaseContext.get("userId");
 
         if(args.length >1  && args[1] != null){
             Object argMap = args[1];

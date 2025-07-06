@@ -83,4 +83,18 @@ public class DateFormatterUtils {
         // 如果不是时间类型，原样返回
         return value.toString();
     }
+
+
+    public static String formatDuration(Long durationInMillis) {
+        if (durationInMillis == null) {
+            return "进行中";
+        }
+
+        long seconds = durationInMillis / 1000;
+        long days = seconds / (24 * 60 * 60);
+        long hours = (seconds % (24 * 60 * 60)) / (60 * 60);
+        long minutes = (seconds % 60 * 60) / 60;
+
+        return String.format("%d天%02d时%02d分", days, hours, minutes);
+    }
 }

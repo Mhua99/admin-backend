@@ -1,18 +1,45 @@
 package com.mhua.adminbackend.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BaseContext {
 
-    public static ThreadLocal<Integer> threadLocal = new ThreadLocal<>();
+    // 使用 Map 来存储多个值
+    public static ThreadLocal<Map<String, Object>> threadLocal = new ThreadLocal<>();
 
-    public static void setCurrentId(Integer id) {
-        threadLocal.set(id);
+    /**
+     * 设置值
+     */
+    public static void set(String key, Object value) {
+        if (threadLocal.get() == null) {
+            threadLocal.set(new HashMap<>());
+        }
+        threadLocal.get().put(key, value);
     }
 
-    public static Integer getCurrentId() {
+    /**
+     * 获取值
+     */
+    public static <T> T get(String key) {
+        Map<String, Object> map = threadLocal.get();
+        if (map == null) {
+            return null;
+        }
+        return (T) map.get(key);
+    }
+
+    /**
+     * 获取整个 Map
+     */
+    public static Map<String, Object> getAll() {
         return threadLocal.get();
     }
 
-    public static void removeCurrentId() {
+    /**
+     * 移除所有值
+     */
+    public static void remove() {
         threadLocal.remove();
     }
 }

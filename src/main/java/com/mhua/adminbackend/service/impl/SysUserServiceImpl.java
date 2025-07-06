@@ -137,6 +137,7 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser user = userList.get(0);
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId());
+        claims.put("nickName", user.getNickname());
 
         String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
 
